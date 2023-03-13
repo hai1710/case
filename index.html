@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SNAKE</title>
+
+</head>
+<body>
+<canvas id="canvas"></canvas>
+;
+<script>
+    const canvas = document.getElementById("canvas");
+    const gameSize = 600;
+    const unit = 40;
+    canvas.width = gameSize;
+    canvas.height = gameSize;
+    const ctx = canvas.getContext('2d');
+    const backgroudColor = `black`;
+    ctx.fillStyle = backgroudColor;
+    ctx.fillRect(0, 0, gameSize, gameSize);
+    const snakeColor = `white`;
+
+    const left = 37;
+    const up = 38;
+    const right = 39;
+    const down = 40;
+
+    const currentDirection =
+    class taoDo {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    class Snake {
+        constructor() {
+            this.body = [
+                new taoDo(unit * 6, unit * 3),
+                new taoDo(unit * 7, unit * 3),
+                new taoDo(unit * 8, unit * 3),
+            ]
+            this.speed = new taoDo(-1, 0);
+        }
+
+        draw() {
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(this.body[0].x, this.body[0].y, unit, unit);
+            ctx.fillStyle = snakeColor;
+            for (let i = 1; i < this.body.length; i++) {
+                ctx.fillRect(this.body[i].x, this.body[i].y, unit, unit);
+            }
+        }
+
+        clear() {
+            ctx.fillStyle = backgroudColor;
+            ctx.fillRect(this.body[0].x, this.body[0].y, unit, unit);
+            ctx.fillStyle = backgroudColor;
+            for (let i = 1; i < this.body.length; i++) {
+                ctx.fillRect(this.body[i].x, this.body[i].y, unit, unit);
+            }
+        }
+
+        move() {
+            this.clear()
+
+            for (let i = this.body.length - 1; i >= 1; i--) {
+                this.body[i].x = this.body[i - 1].x;
+                this.body[i].y = this.body[i - 1].y;
+            }
+            this.body[0].x += this.speed.x * unit;
+            this.body[0].y += this.speed.y * unit;
+
+            this.draw()
+        }
+    }
+
+    let player = new Snake();
+    player.draw()
+
+    setInterval(() => {
+        player.move()
+    }, 200)
+
+    document.onkeydown = function (e) {
+        switch (e.keyCode) {
+            case left:
+                player.speed = new taoDo(-1, 0)
+                break;
+            case right:
+                player.speed = new taoDo(1,  0)
+                break;
+            case up:
+                player.speed = new taoDo(0, -1)
+                break;
+            case down:
+                player.speed = new taoDo(0, 1)
+                break;
+            default:
+                break;
+
+        }
+    }
+</script>
+</body>
+</html>
