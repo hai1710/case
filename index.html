@@ -3,35 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>SNAKE</title>
-
+    <style>
+        canvas {
+            padding: 0;
+            margin: auto;
+            display: block;
+            width: 750px;
+            height: 750px;
+        }
+    </style>
 </head>
-<body>
-<canvas id="canvas"></canvas>
+<body style="background-image: url('ki.jpg') ">
+<canvas id="canvas" style="border:5px solid cadetblue"></canvas>
 ;
 <script>
+
     const canvas = document.getElementById("canvas");
     const gameSize = 600;
-    const unit = 40;
+    const unit = 20;
     canvas.width = gameSize;
     canvas.height = gameSize;
     const ctx = canvas.getContext('2d');
     const backgroudColor = `black`;
     ctx.fillStyle = backgroudColor;
     ctx.fillRect(0, 0, gameSize, gameSize);
-    const snakeColor = `white`;
+        const snakeColor = `
+        `;
+    const gameDelay = 100
 
     const left = 37;
     const up = 38;
     const right = 39;
     const down = 40;
 
-    const currentDirection =
     class taoDo {
         constructor(x, y) {
             this.x = x;
             this.y = y;
         }
     }
+
+    let currentDirection = new taoDo(-1, 0);
 
     class Snake {
         constructor() {
@@ -40,6 +52,7 @@
                 new taoDo(unit * 7, unit * 3),
                 new taoDo(unit * 8, unit * 3),
             ]
+            this.head = this.body[0]
             this.speed = new taoDo(-1, 0);
         }
 
@@ -61,6 +74,21 @@
             }
         }
 
+        handleBound() {
+            if (this.head.x < 0) {
+                this.head.x = gameSize - unit;
+            }
+            if (this.head.x > gameSize - unit) {
+                this.head.x = 0;
+            }
+            if (this.head.y < 0) {
+                this.head.y = gameSize - unit;
+            }
+            if (this.head.y > gameSize - unit) {
+                this.head.y = 0;
+            }
+        }
+
         move() {
             this.clear()
 
@@ -70,31 +98,96 @@
             }
             this.body[0].x += this.speed.x * unit;
             this.body[0].y += this.speed.y * unit;
+            this.handleBound()
 
+            this.draw()
+        }
+
+        checkEat(food) {
+            let head = this.body[0];
+            return food.x === head.x && food.y === head.y;
+        }
+
+        grow() {
+            this.clear()
+            let snakeLength = this.body.length;
+            let mountX = this.body[snakeLength - 1].x - this.body[snakeLength - 2].x;
+            let mountY = this.body[snakeLength - 1].y - this.body[snakeLength - 2].y;
+            let newPart = new taoDo(
+                this.body[snakeLength - 1].x + mountX,
+                this.body[snakeLength - 1].y + mountY
+            )
+            this.body.push(newPart);
             this.draw()
         }
     }
 
+    class Food {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        draw() {
+            ctx.fillStyle = `green`;
+            ctx.fillRect(this.x, this.y, unit, unit);
+        }
+
+        clear() {
+            ctx.fillStyle = backgroudColor;
+            ctx.fillRect(this.x, this.y, unit, unit);
+        }
+
+        getRandomNumber() {
+            let randomNumber = Math.floor(Math.random() * gameSize);
+            randomNumber -= randomNumber % unit;
+            return randomNumber
+        }
+
+        spawn() {
+            this.clear();
+            this.x = this.getRandomNumber();
+            this.y = this.getRandomNumber();
+            this.draw()
+        }
+    }
+
+
     let player = new Snake();
     player.draw()
+    let food = new Food();
+    food.spawn()
 
     setInterval(() => {
         player.move()
-    }, 200)
+        if (player.checkEat(food)) {
+            player.grow()
+            food.spawn()
+        }
+    }, gameDelay)
 
     document.onkeydown = function (e) {
         switch (e.keyCode) {
             case left:
+                if (currentDirection.x === 1) break;
                 player.speed = new taoDo(-1, 0)
+                currentDirection = new taoDo(-1, 0)
                 break;
             case right:
-                player.speed = new taoDo(1,  0)
+                if (currentDirection.x === -1) break;
+                player.speed = new taoDo(1, 0)
+                currentDirection = new taoDo(1, 0)
                 break;
             case up:
+                if (currentDirection.y === 1) break;
                 player.speed = new taoDo(0, -1)
+                currentDirection = new taoDo(0, -1)
                 break;
             case down:
+                if (currentDirection.y === -1) break;
+
                 player.speed = new taoDo(0, 1)
+                currentDirection = new taoDo(0, 1)
                 break;
             default:
                 break;
