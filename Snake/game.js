@@ -1,5 +1,5 @@
 let snake, food;
-let count = 0;
+
 function setup() {
     createCanvas(WITDH, HEIGHT);
     newGame();
@@ -10,25 +10,24 @@ function draw() {
     if(!snake.isDead){
         drawSnake();
     } else {
-        alert('you lost: ' + count)
+        alert('you lost: ' )
         newGame()
     }
 }
 
 function drawSnake() {
     // update every SNAKE_SPEED frame
-    if(frameCount % SNAKE_SPEED == 0)
-    {
+    if (frameCount % SNAKE_SPEED == 0) {
         snake.update();
     }
+
     //
-    // textSize(15);
-    // text("Score: " + snake.length, 0, 15);
+    textSize(15);
+    text("Score: " + snake.length, 0, 15);
     food.show();
     snake.show();
-    count ++;
     // Handle when snake eat food
-    if(snake.head.x == food.x && snake.head.y == food.y){
+    if (snake.head.x == food.x && snake.head.y == food.y) {
         eatFood();
     }
 }
