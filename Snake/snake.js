@@ -32,11 +32,11 @@ class Snake {
     show() {
         noStroke();
         // Draw snake head
-        fill('red');
+        fill('#cccccc');
         rect(this.head.x, this.head.y, GRID_SIZE, GRID_SIZE);
 
         // Draw snake body
-        fill('blue');
+        fill(115, 0, 153);
         for(let vector of this.body)
         {
             rect(vector.x, vector.y, GRID_SIZE, GRID_SIZE);
